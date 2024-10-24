@@ -41,16 +41,8 @@ with tab1:
 # 家事リスト 2
 with tab2:
     st.header("家事リスト 2")
-    task_name2 = st.text_input("家事の名前を入力してください (リスト 2)")
-
-    # リスト 1の家事をリスト 2にも追加
-    if st.button("追加 (リスト 2)"):
-        if task_name2:
-            st.session_state.tasks.append(task_name2)  # 直接リスト 2 から追加
-        else:
-            st.warning("家事の名前を入力してください。")
-
-    st.write("現在の家事リスト:")
+    
+    st.write("現在の家事リスト (リスト 1 の内容):")
     for i in range(0, len(st.session_state.tasks), 4):  # 4つごとに処理
         cols = st.columns(4)
         for j in range(4):
