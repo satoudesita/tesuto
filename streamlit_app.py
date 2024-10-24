@@ -18,35 +18,39 @@ if st.button("タブを追加"):
 # タブの作成
 tabs = st.session_state.tabs
 tab_names = list(tabs.keys())
+
+# タブを表示
 if tab_names:
-    selected_tab = st.selectbox("タブを選択", tab_names)
-else:
-    selected_tab = None
-
-if selected_tab:
-    st.header(selected_tab)
+    selected_tab = st.tabs(tab_names)
     
-    # タスク追加
-    task_name = st.text_input("家事の名前を入力してください")
+    # 選択されたタブの内容
+    for tab_name in tab_names:
+        with selected_tab[tab_names.index(tab_name)]:
+            st.header(tab_name)
+            
+            # タスク追加
+            task_name = st.text_input(f"{tab_name} に追加する家事の名前を入力してください")
 
-    if st.button("追加"):
-        if task_name:
-            tabs[selected_tab].append(task_name)
+            if st.button("追加", key=f"add_{tab_name}"):
+                if task_name:
+                    tabs[tab_name].append(task_name)
 
-    # 現在の家事リスト表示
-    st.write("現在の家事リスト:")
-    for i in range(0, len(tabs[selected_tab]), 4):  # 4つごとに処理
-        cols = st.columns(4)
-        for j in range(4):
-            if i + j < len(tabs[selected_tab]):
-                with cols[j]:
-                    button_key = f"{selected_tab}_{i + j}"
-                    if st.button(tabs[selected_tab][i + j], key=button_key):
-                        st.success(f"{tabs[selected_tab][i + j]} を実行しました！")
-                        st.session_state.button_state[tabs[selected_tab][i + j]] = True
+            # 現在の家事リスト表示
+            st.write("現在の家事リスト:")
+            for i in range(0, len(tabs[tab_name]), 4):  # 4つごとに処理
+                cols = st.columns(4)
+                for j in range(4):
+                    if i + j < len(tabs[tab_name]):
+                        with cols[j]:
+                            button_key = f"{tab_name}_{i + j}"
+                            if st.button(tabs[tab_name][i + j], key=button_key):
+                                st.success(f"{tabs[tab_name][i + j]} を実行しました！")
+                                st.session_state.button_state[tabs[tab_name][i + j]] = True
 
-    # 実行済みの家事表示
-    st.write("実行済みの家事:")
-    for task, completed in st.session_state.button_state.items():
-        if completed:
-            st.write(f"✔️ {task}")
+            # 実行済みの家事表示
+            st.write("実行済みの家事:")
+            for task, completed in st.session_state.button_state.items():
+                if completed:
+                    st.write(f"✔️ {task}")
+else:
+    st.warning("タブがまだ追加されていません。")
