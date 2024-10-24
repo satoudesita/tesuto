@@ -3,39 +3,63 @@ import streamlit as st
 # タイトル
 st.title("家事管理アプリ")
 
-# 家事の名前を入力
-task_name = st.text_input("家事の名前を入力してください")
+# セッション状態の初期化
+if 'tasks1' not in st.session_state:
+    st.session_state.tasks1 = []
+if 'tasks2' not in st.session_state:
+    st.session_state.tasks2 = []
+if 'button_state1' not in st.session_state:
+    st.session_state.button_state1 = {}
+if 'button_state2' not in st.session_state:
+    st.session_state.button_state2 = {}
 
-# ボタンを追加するためのリスト
-if 'tasks' not in st.session_state:
-    st.session_state.tasks = []
+# タブの作成
+tab1, tab2 = st.tabs(["家事リスト 1", "家事リスト 2"])
 
-# ボタン追加の処理
-if st.button("追加"):
-    if task_name:
-        st.session_state.tasks.append(task_name)
+# 家事リスト 1
+with tab1:
+    st.header("家事リスト 1")
+    task_name1 = st.text_input("家事の名前を入力してください (リスト 1)")
 
-# 現在の家事リストを表示
-st.write("現在の家事リスト:")
+    if st.button("追加 (リスト 1)"):
+        if task_name1:
+            st.session_state.tasks1.append(task_name1)
 
-# 家事ボタンを横に並べる
-if st.session_state.tasks:
-    for i in range(0, len(st.session_state.tasks), 4):  # 4つごとに処理
+    st.write("現在の家事リスト:")
+    for i in range(0, len(st.session_state.tasks1), 4):  # 4つごとに処理
         cols = st.columns(4)
         for j in range(4):
-            if i + j < len(st.session_state.tasks):  # ボタンが存在する場合のみ表示
+            if i + j < len(st.session_state.tasks1):
                 with cols[j]:
-                    if st.button(st.session_state.tasks[i + j]):
-                        # ボタンを押した場合の処理
-                        st.success(f"{st.session_state.tasks[i + j]} を実行しました！")
-                        # ボタンの状態をセッションに保存
-                        if 'button_state' not in st.session_state:
-                            st.session_state.button_state = {}
-                        st.session_state.button_state[st.session_state.tasks[i + j]] = True
-                        
-# 連動するボタンの状態を表示
-if 'button_state' in st.session_state:
+                    if st.button(st.session_state.tasks1[i + j]):
+                        st.success(f"{st.session_state.tasks1[i + j]} を実行しました！")
+                        st.session_state.button_state1[st.session_state.tasks1[i + j]] = True
+
     st.write("実行済みの家事:")
-    for task, completed in st.session_state.button_state.items():
+    for task, completed in st.session_state.button_state1.items():
+        if completed:
+            st.write(f"✔️ {task}")
+
+# 家事リスト 2
+with tab2:
+    st.header("家事リスト 2")
+    task_name2 = st.text_input("家事の名前を入力してください (リスト 2)")
+
+    if st.button("追加 (リスト 2)"):
+        if task_name2:
+            st.session_state.tasks2.append(task_name2)
+
+    st.write("現在の家事リスト:")
+    for i in range(0, len(st.session_state.tasks2), 4):  # 4つごとに処理
+        cols = st.columns(4)
+        for j in range(4):
+            if i + j < len(st.session_state.tasks2):
+                with cols[j]:
+                    if st.button(st.session_state.tasks2[i + j]):
+                        st.success(f"{st.session_state.tasks2[i + j]} を実行しました！")
+                        st.session_state.button_state2[st.session_state.tasks2[i + j]] = True
+
+    st.write("実行済みの家事:")
+    for task, completed in st.session_state.button_state2.items():
         if completed:
             st.write(f"✔️ {task}")
