@@ -24,12 +24,12 @@ if tabs:
     selected_tab = st.tabs(tabs)
     
     # 選択されたタブの内容
-    for tab_name in tabs:
-        with selected_tab[tabs.index(tab_name)]:
+    for index, tab_name in enumerate(tabs):
+        with selected_tab[index]:
             st.header(tab_name)
             
             # タスク追加
-            task_name = st.text_input(f"{tab_name} に追加する家事の名前を入力してください")
+            task_name = st.text_input(f"{tab_name} に追加する家事の名前を入力してください", key=f"task_input_{tab_name}")
 
             if st.button("追加", key=f"add_{tab_name}"):
                 if task_name and task_name not in st.session_state.tasks:
