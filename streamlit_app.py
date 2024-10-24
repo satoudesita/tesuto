@@ -46,14 +46,13 @@ if tabs:
                             task = st.session_state.tasks[i + j]
                             button_key = f"{tab_name}_{i + j}"
                             
-                            # ボタンの色を変更するためのスタイル
-                            button_color = "lightgray" if task not in st.session_state.button_state else "green"
-                            if st.button(task, key=button_key, help="このタスクを実行します", disabled=task in st.session_state.button_state):
-                                st.session_state.button_state[task] = True
-                                st.success(f"{task} を実行しました！")
-                                
-                            # ボタンの色を変更するためのHTMLスタイル
-                            st.markdown(f"<style>div.stButton > button[data-testid='{button_key}'] {{ background-color: {button_color}; }}</style>", unsafe_allow_html=True)
+                            # ボタンの押下を反映
+                            if task in st.session_state.button_state:
+                                st.markdown(f"<div style='background-color: lightgreen; padding: 10px; border-radius: 5px;'>{task} (実行済み)</div>", unsafe_allow_html=True)
+                            else:
+                                if st.button(task, key=button_key):
+                                    st.session_state.button_state[task] = True
+                                    st.success(f"{task} を実行しました！")
 
             # 実行済みの家事表示
             st.write("実行済みの家事:")
@@ -61,4 +60,4 @@ if tabs:
                 if completed:
                     st.write(f"✔️ {task}")
 else:
-    st.warning("タブがまだ追加されていませ。")
+    st.warning("タブがまだ追加されていません。")
