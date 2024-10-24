@@ -4,7 +4,7 @@ import streamlit as st
 st.title("家事管理アプリ")
 
 # 家事の名前を入力
-task_name = st.text_input("家事の名前を入力してください")
+task_name = st.text_input("家事の名前を入力してくださ")
 
 # ボタンを追加するためのリスト
 if 'tasks' not in st.session_state:
