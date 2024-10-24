@@ -10,16 +10,12 @@ if 'button_state' not in st.session_state:
     st.session_state.button_state = {}
 if 'tabs' not in st.session_state:
     st.session_state.tabs = []
-if 'tab_colors' not in st.session_state:
-    st.session_state.tab_colors = {}
 
 # タブの追加処理
 new_tab_name = st.text_input("新しいタブの名前を入力してください")
-tab_color = st.color_picker("タブの色を選択してください", "#00f900")  # デフォルト色を緑に設定
 if st.button("タブを追加"):
     if new_tab_name and new_tab_name not in st.session_state.tabs:
         st.session_state.tabs.append(new_tab_name)
-        st.session_state.tab_colors[new_tab_name] = tab_color  # 色を保存
 
 # タブの作成
 tabs = st.session_state.tabs
@@ -51,13 +47,12 @@ if tabs:
                             button_key = f"{tab_name}_{i + j}"
                             
                             # ボタンの押下を反映
-                            button_color = st.session_state.tab_colors[tab_name]
                             if task in st.session_state.button_state:
-                                st.markdown(f"<div style='background-color: {button_color}; padding: 10px; border-radius: 5px;'>{task} (実行済み)</div>", unsafe_allow_html=True)
+                                st.markdown(f"<div style='background-color: lightgreen; padding: 10px; border-radius: 5px;'>{task} (実行済み)</div>", unsafe_allow_html=True)
                             else:
                                 if st.button(task, key=button_key):
                                     st.session_state.button_state[task] = True
-                                    st.success(f"{task} を実行しました！")
+                                    
 
             # 実行済みの家事表示
             st.write("実行済みの家事:")
