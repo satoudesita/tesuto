@@ -61,4 +61,4 @@ if tabs:
                 if completed:
                     st.write(f"✔️ {task}")
 else:
-    st.warning("タブがまだ追加されていません。")
+    st.warning("タブがまだ追加されていませ。")
