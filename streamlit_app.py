@@ -28,12 +28,13 @@ if tabs:
         with selected_tab[index]:
             st.header(tab_name)
             
-            # タスク追加
-            task_name = st.text_input(f"{tab_name} に追加する家事の名前を入力してください", key=f"task_input_{tab_name}")
+            # 最初のタブの場合のみタスク追加
+            if index == 0:
+                task_name = st.text_input(f"{tab_name} に追加する家事の名前を入力してください", key=f"task_input_{tab_name}")
 
-            if st.button("追加", key=f"add_{tab_name}"):
-                if task_name and task_name not in st.session_state.tasks:
-                    st.session_state.tasks.append(task_name)
+                if st.button("追加", key=f"add_{tab_name}"):
+                    if task_name and task_name not in st.session_state.tasks:
+                        st.session_state.tasks.append(task_name)
 
             # 現在の家事リスト表示
             st.write("現在の家事リスト:")
