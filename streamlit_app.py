@@ -27,7 +27,9 @@ with tab1:
         for j in range(4):
             if i + j < len(st.session_state.tasks):
                 with cols[j]:
-                    if st.button(st.session_state.tasks[i + j]):
+                    # ボタンにユニークなキーを割り当てる
+                    button_key = f"task1_{i + j}"
+                    if st.button(st.session_state.tasks[i + j], key=button_key):
                         st.success(f"{st.session_state.tasks[i + j]} を実行しました！")
                         st.session_state.button_state[st.session_state.tasks[i + j]] = True
 
@@ -54,7 +56,9 @@ with tab2:
         for j in range(4):
             if i + j < len(st.session_state.tasks):
                 with cols[j]:
-                    if st.button(st.session_state.tasks[i + j]):
+                    # ボタンにユニークなキーを割り当てる
+                    button_key = f"task2_{i + j}"
+                    if st.button(st.session_state.tasks[i + j], key=button_key):
                         st.success(f"{st.session_state.tasks[i + j]} を実行しました！")
                         st.session_state.button_state[st.session_state.tasks[i + j]] = True
 
