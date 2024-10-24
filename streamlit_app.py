@@ -43,10 +43,17 @@ if tabs:
                 for j in range(4):
                     if i + j < len(st.session_state.tasks):
                         with cols[j]:
+                            task = st.session_state.tasks[i + j]
                             button_key = f"{tab_name}_{i + j}"
-                            if st.button(st.session_state.tasks[i + j], key=button_key):
-                                st.success(f"{st.session_state.tasks[i + j]} を実行しました！")
-                                st.session_state.button_state[st.session_state.tasks[i + j]] = True
+                            
+                            # ボタンの色を変更するためのスタイル
+                            button_color = "lightgray" if task not in st.session_state.button_state else "green"
+                            if st.button(task, key=button_key, help="このタスクを実行します", disabled=task in st.session_state.button_state):
+                                st.session_state.button_state[task] = True
+                                st.success(f"{task} を実行しました！")
+                                
+                            # ボタンの色を変更するためのHTMLスタイル
+                            st.markdown(f"<style>div.stButton > button[data-testid='{button_key}'] {{ background-color: {button_color}; }}</style>", unsafe_allow_html=True)
 
             # 実行済みの家事表示
             st.write("実行済みの家事:")
