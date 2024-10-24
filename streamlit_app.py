@@ -52,7 +52,7 @@ if tabs:
                             else:
                                 if st.button(task, key=button_key):
                                     st.session_state.button_state[task] = True
-                                    st.success(f"{task} を実行しました！")
+                                    
 
             # 実行済みの家事表示
             st.write("実行済みの家事:")
