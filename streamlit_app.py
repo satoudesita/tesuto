@@ -12,6 +12,8 @@ if 'tabs' not in st.session_state:
     st.session_state.tabs = []
 if 'tab_colors' not in st.session_state:
     st.session_state.tab_colors = {}
+if 'active_color' not in st.session_state:
+    st.session_state.active_color = "#ffffff"  # 初期色を白に設定
 
 # タブの追加処理
 new_tab_name = st.text_input("新しいタブの名前を入力してください")
@@ -50,8 +52,8 @@ if tabs:
                             task = st.session_state.tasks[i + j]
                             button_key = f"{tab_name}_{i + j}"
 
-                            # タブごとのボタン色を取得
-                            button_color = st.session_state.tab_colors.get(tab_name, "#ffffff")  # デフォルト色を白に設定
+                            # 現在のアクティブカラーを取得
+                            button_color = st.session_state.active_color if task in st.session_state.button_state else st.session_state.tab_colors.get(tab_name, "#ffffff")
 
                             # ボタンの押下を反映
                             if task in st.session_state.button_state:
@@ -59,6 +61,7 @@ if tabs:
                             else:
                                 if st.button(task, key=button_key):
                                     st.session_state.button_state[task] = True
+                                    st.session_state.active_color = st.session_state.tab_colors[tab_name]  # 押されたタブの色をアクティブカラーに設定
                                     st.success(f"{task} を実行しました！")
 
             # 実行済みの家事表示
@@ -67,4 +70,4 @@ if tabs:
                 if completed:
                     st.write(f"✔️ {task}")
 else:
-    st.warning("タブがまだ追加されていません")
+    st.warning("タブがまだ追加されていません。")
