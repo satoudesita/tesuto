@@ -52,7 +52,7 @@ if tabs:
                             task = st.session_state.tasks[i + j]
                             button_key = f"{tab_name}_{i + j}"
 
-                            # 現在のアクティブカラーを取得
+                            # 現在のボタン色を取得
                             button_color = st.session_state.active_color if task in st.session_state.button_state else st.session_state.tab_colors.get(tab_name, "#ffffff")
 
                             # ボタンの押下を反映
@@ -61,7 +61,9 @@ if tabs:
                             else:
                                 if st.button(task, key=button_key):
                                     st.session_state.button_state[task] = True
-                                    st.session_state.active_color = st.session_state.tab_colors[tab_name]  # 押されたタブの色をアクティブカラーに設定
+                                    # 押されたタブの色をアクティブカラーとして設定
+                                    if st.session_state.active_color == "#ffffff":  # 初期色であれば色を設定
+                                        st.session_state.active_color = st.session_state.tab_colors[tab_name]
                                     st.success(f"{task} を実行しました！")
 
             # 実行済みの家事表示
