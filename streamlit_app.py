@@ -39,6 +39,7 @@ with tab1:
 
 with tab2:
 
+    # 初期化
     if 'input_count' not in st.session_state:
         st.session_state.input_count = 3  # 最初に表示する入力フィールドの数
 
@@ -115,3 +116,11 @@ with tab2:
     # 標準偏差を計算（分散の平方根）
     standard_deviation_b = variance_b ** 0.5
     st.text(f"ぐるーぷBの標準偏差: {standard_deviation_b}")
+
+    # 共分散の計算
+    covariance = 0
+    for i in range(st.session_state.input_count):
+        covariance += (aa[i] - heikin) * (aaa[i] - heikin_b)
+
+    covariance /= st.session_state.input_count
+    st.text(f"ぐるーぷAとぐるーぷBの共分散: {covariance}")
