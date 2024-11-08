@@ -39,7 +39,6 @@ with tab1:
 
 with tab2:
 
-    # 初期化
     if 'input_count' not in st.session_state:
         st.session_state.input_count = 3  # 最初に表示する入力フィールドの数
 
@@ -68,8 +67,20 @@ with tab2:
     st.text(f"ぐるーぷAの平均: {heikin}")
 
     # 各入力値と平均との差を表示
+    squared_deviations = []  # 偏差の二乗を保存するリスト
     for i in range(st.session_state.input_count):
-        st.text(f"{i+1}: {aa[i]} と 平均との差: {aa[i] - heikin}と 偏差の二乗: {(aa[i] - heikin)**2}")
+        deviation = aa[i] - heikin
+        squared_deviation = deviation ** 2
+        squared_deviations.append(squared_deviation)
+        st.text(f"{i+1}: {aa[i]} と 平均との差: {deviation} と 偏差の二乗: {squared_deviation}")
+
+    # 偏差の二乗の平均（分散）を計算
+    variance = sum(squared_deviations) / st.session_state.input_count
+    st.text(f"ぐるーぷAの分散: {variance}")
+
+    # 標準偏差を計算（分散の平方根）
+    standard_deviation = variance ** 0.5
+    st.text(f"ぐるーぷAの標準偏差: {standard_deviation}")
 
     # ぐるーぷB
     st.write("ぐるーぷB")
@@ -86,8 +97,21 @@ with tab2:
 
     # 合計と平均を表示
     st.text(f"ぐるーぷBの合計: {goukeib}")
-    st.text(f"ぐるーぷBの平均: {goukeib / st.session_state.input_count}")
-    
+    heikin_b = goukeib / st.session_state.input_count
+    st.text(f"ぐるーぷBの平均: {heikin_b}")
+
     # 各入力値と平均との差を表示
+    squared_deviations_b = []  # 偏差の二乗を保存するリスト
     for i in range(st.session_state.input_count):
-        st.text(f"{i+1}: {aaa[i]} と 平均との差: {aaa[i] - heikin}偏差の二乗: {(aaa[i] - heikin)**2}")
+        deviation_b = aaa[i] - heikin_b
+        squared_deviation_b = deviation_b ** 2
+        squared_deviations_b.append(squared_deviation_b)
+        st.text(f"{i+1}: {aaa[i]} と 平均との差: {deviation_b} と 偏差の二乗: {squared_deviation_b}")
+
+    # 偏差の二乗の平均（分散）を計算
+    variance_b = sum(squared_deviations_b) / st.session_state.input_count
+    st.text(f"ぐるーぷBの分散: {variance_b}")
+
+    # 標準偏差を計算（分散の平方根）
+    standard_deviation_b = variance_b ** 0.5
+    st.text(f"ぐるーぷBの標準偏差: {standard_deviation_b}")
