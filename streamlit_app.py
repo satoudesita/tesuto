@@ -1,7 +1,7 @@
 import streamlit as st
 import datetime
 import time
-import pygame
+
 tab_titles = ['たいせい', 'はお']
 tab1, tab2 = st.tabs(tab_titles)
  
