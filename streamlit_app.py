@@ -47,15 +47,15 @@ input_data = st.text_input("QRコードとバーコードに変換するデー�
 
 if input_data:
     st.subheader("生成されたQRコード")
-    # QRコードの表示
+    # QRコードの表示（サイズを小さく設定）
     qr_img = generate_qrcode(input_data)
-    st.image(qr_img, caption="QRコード", use_container_width=True)
+    st.image(qr_img, caption="QRコード", use_container_width=True, width=10)  # 画像幅を200に設定
 
     # Code128バーコードに日本語が含まれているか確認
     if any(ord(c) > 127 for c in input_data):  # 日本語や非ASCII文字を含むかチェック
         st.error("Code128バーコードはASCII文字のみサポートしています。QRコードを使用します。")
     else:
         st.subheader("生成されたバーコード（Code128）")
-        # Code128バーコードの表示
+        # Code128バーコードの表示（サイズを小さく設定）
         barcode_img = generate_code128_barcode(input_data)
-        st.image(barcode_img, caption="Code128バーコード", use_container_width=True)
+        st.image(barcode_img, caption="Code128バーコード", use_container_width=True, width=200)  # 画像幅を200に設定
