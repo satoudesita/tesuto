@@ -42,20 +42,40 @@ def generate_code128_barcode(data):
 st.title("QRコードとバーコードを生成")
 st.write("以下のフォームに情報を入力してください。")
 
-# 入力欄
-input_data = st.text_input("QRコードとバーコードに変換するデータを入力:")
+# ユーザーが追加する情報の入力項目
+fields = ["高校", "学年", "クラス","名前"]
 
-if input_data:
+# 初期の入力項目を表示
+user_input = {field: st.text_input(field) for field in fields}
+
+# 追加情報の項目をテキストボックスで動的に入力
+st.subheader("追加情報を入力（任意）")
+additional_fields = []
+add_field = st.text_input("項目名")
+add_value = st.text_input("その値")
+
+if add_field and add_value:
+    additional_fields.append((add_field, add_value))
+
+# 入力フォームがすべて埋まった場合
+if all(user_input[field] for field in fields):
+    # 名前、電話番号、住所を1つの文字列にまとめる
+    combined_data = "\n".join([f"{key}: {value}" for key, value in user_input.items()])
+    
+    # 追加された情報を組み合わせ
+    for field_name, field_value in additional_fields:
+        combined_data += f"\n{field_name}: {field_value}"
+    
+    # QRコードを生成
     st.subheader("生成されたQRコード")
-    # QRコードの表示（サイズを小さく設定）
-    qr_img = generate_qrcode(input_data)
-    st.image(qr_img, caption="QRコード", use_container_width=True, width=10)  # 画像幅を200に設定
+    qr_img = generate_qrcode(combined_data)
+    st.image(qr_img, caption="QRコード", use_container_width=True)
 
     # Code128バーコードに日本語が含まれているか確認
-    if any(ord(c) > 127 for c in input_data):  # 日本語や非ASCII文字を含むかチェック
+    if any(ord(c) > 127 for c in combined_data):  # 日本語や非ASCII文字を含むかチェック
         st.error("Code128バーコードはASCII文字のみサポートしています。QRコードを使用します。")
     else:
+        # バーコードを生成
         st.subheader("生成されたバーコード（Code128）")
-        # Code128バーコードの表示（サイズを小さく設定）
-        barcode_img = generate_code128_barcode(input_data)
-        st.image(barcode_img, caption="Code128バーコード", use_container_width=True, width=200)  # 画像幅を200に設定
+        barcode_img = generate_code128_barcode(combined_data)
+        st.image(barcode_img, caption="Code128バーコード", use_container_width=True)
