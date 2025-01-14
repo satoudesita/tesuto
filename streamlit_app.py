@@ -49,7 +49,7 @@ fields = ["高校", "学年", "クラス","名前"]
 user_input = {field: st.text_input(field) for field in fields}
 
 # 追加情報の項目をテキストボックスで動的に入力
-st.subheader("追加情報を入力（任意）")
+st.subheader("追加情報を入力（任意)")
 additional_fields = []
 add_field = st.text_input("項目名")
 add_value = st.text_input("その値")
