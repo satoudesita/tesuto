@@ -43,7 +43,7 @@ st.title("QRコードとバーコードを生成")
 st.write("以下のフォームに情報を入力してください。")
 
 # ユーザーが追加する情報の入力項目
-fields = ["高校", "学年", "クラス","名前"]
+fields = ["high school", "glade", "class","name"]
 
 # 初期の入力項目を表示
 user_input = {field: st.text_input(field) for field in fields}
