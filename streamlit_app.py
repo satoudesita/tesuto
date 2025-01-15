@@ -51,8 +51,8 @@ user_input = {field: st.text_input(field) for field in fields}
 # 追加情報の項目をテキストボックスで動的に入力
 st.subheader("add information")
 additional_fields = []
-add_field = st.text_input("name")
-add_value = st.text_input("value")
+add_field = st.text_input("the name")
+add_value = st.text_input("the value")
 
 if add_field and add_value:
     additional_fields.append((add_field, add_value))
