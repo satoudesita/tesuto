@@ -41,6 +41,7 @@ def generate_code128_barcode(data):
 # Streamlit UI部分
 st.title("QRコードとバーコードを生成")
 st.write("以下のフォームに情報を入力してください。")
+st.write("QRコードは日本語対応可バーコードは日本語対応不可")
 
 # ユーザーが追加する情報の入力項目
 fields = ["high school", "glade", "class","name"]
