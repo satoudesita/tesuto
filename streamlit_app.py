@@ -4,10 +4,11 @@ import barcode
 from barcode.writer import ImageWriter
 from io import BytesIO
 from PIL import Image
+import streamlit.components.v1 as components
+# タブを作成
+tab1, tab2 = st.tabs(["QR", "BR"])
 
-
-with st.expander("QRコード"):
-    
+with tab1:
 
     # QRコードを生成する関数
     def generate_qrcode(data):
@@ -21,12 +22,12 @@ with st.expander("QRコード"):
         qr.make(fit=True)
 
         img = qr.make_image(fill='black', back_color='white')
-        
+
         # PIL Imageをバイナリストリームに変換
         img_byte_arr = BytesIO()
         img.save(img_byte_arr, format='PNG')
         img_byte_arr.seek(0)
-        
+
         return img_byte_arr
 
     # Code128バーコードを生成する関数
@@ -34,12 +35,12 @@ with st.expander("QRコード"):
         # Code128はASCIIのみサポート
         barcode_class = barcode.get_barcode_class('code128')
         code128 = barcode_class(data, writer=ImageWriter())
-        
+
         # バーコードをバイナリストリームとして生成
         buffer = BytesIO()
         code128.write(buffer)
         buffer.seek(0)
-        
+
         return buffer
 
     # Streamlit UI部分
@@ -47,7 +48,7 @@ with st.expander("QRコード"):
     st.write("QRコードは日本語対応可バーコードは日本語対応不可")
 
     # ユーザーが追加する情報の入力項目
-    fields = ["high school", "glade", "class","name"]
+    fields = ["high school", "glade", "class", "name"]
 
     # 初期の入力項目を表示
     user_input = {field: st.text_input(field) for field in fields}
@@ -65,43 +66,53 @@ with st.expander("QRコード"):
     if all(user_input[field] for field in fields):
         # 名前、電話番号、住所を1つの文字列にまとめる
         combined_data = "\n".join([f"{key}: {value}" for key, value in user_input.items()])
-        
+
         # 追加された情報を組み合わせ
         for field_name, field_value in additional_fields:
             combined_data += f"\n{field_name}: {field_value}"
-        
+
         # QRコードを生成
         st.subheader("生成されたQRコード")
         qr_img = generate_qrcode(combined_data)
         st.image(qr_img, caption="QRコード", use_container_width=True)
-with st.expander("バーコード"):
-    # ユーザーからの入力を受け取る
-    text_input = st.text_input("バーコードにするテキストを入力してください:")
 
-    # 入力されたテキストでCODE39バーコードを生成
-    if text_input:
-        try:
-            # CODE39バーコードを作成
-            code39 = barcode.get_barcode_class('code39')
-            
-            # ImageWriterのオプションを設定
-            writer = ImageWriter()
-            writer_options = {
-                'module_width': 0.1,  # バーコードのモジュール幅
-                'module_height': 3   # バーコードの高さ
-            }
+    with st.expander("バーコード"):
+        # ユーザーからの入力を受け取る
+        text_input = st.text_input("バーコードにするテキストを入力してください:")
 
-            # チェックサムなしのバーコードを作成
-            barcode_img = code39(text_input, writer=writer)
-            barcode_img = barcode_img.__class__(text_input, writer=writer, add_checksum=False)
+        # 入力されたテキストでCODE39バーコードを生成
+        if text_input:
+            try:
+                # CODE39バーコードを作成
+                code39 = barcode.get_barcode_class('code39')
 
-            # バーコード画像をメモリ上で保存
-            buf = BytesIO()
-            barcode_img.write(buf, writer_options)
-            buf.seek(0)
+                # ImageWriterのオプションを設定
+                writer = ImageWriter()
+                writer_options = {
+                    'module_width': 0.1,  # バーコードのモジュール幅
+                    'module_height': 3   # バーコードの高さ
+                }
 
-            # バーコード画像をStreamlitに表示
-            st.image(buf, caption="生成されたCODE39バーコード", use_container_width=True)
-        
-        except Exception as e:
-            st.error(f"バーコード生成に失敗しました: {e}")
+                # チェックサムなしのバーコードを作成
+                barcode_img = code39(text_input, writer=writer)
+                barcode_img = barcode_img.__class__(text_input, writer=writer, add_checksum=False)
+
+                # バーコード画像をメモリ上で保存
+                buf = BytesIO()
+                barcode_img.write(buf, writer_options)
+                buf.seek(0)
+
+                # バーコード画像をStreamlitに表示
+                st.image(buf, caption="生成されたCODE39バーコード", use_container_width=True)
+
+            except Exception as e:
+                st.error(f"バーコード生成に失敗しました: {e}")
+
+with tab2:
+   
+    # テキストボックスの作成
+    user_input = st.text_input("テキストを入力してください:")
+
+    # 入力された内容を表示
+    if user_input:
+        st.write("入力された内容:", user_input)
