@@ -1,4 +1,5 @@
 import streamlit as st
+from datetime import datetime
 import qrcode
 import barcode
 from barcode.writer import ImageWriter
@@ -109,10 +110,15 @@ with tab1:
                 st.error(f"バーコード生成に失敗しました: {e}")
 
 with tab2:
-   
-    # テキストボックスの作成
-    user_input = st.text_input("テキストを入力してください:")
 
-    # 入力された内容を表示
+    # Streamlitアプリ
+    st.title('テキストボックスの内容と時刻を取得')
+
+    # テキストボックスの入力
+    user_input = st.text_input('テキストを入力してください')
+
+    # テキストボックスの入力がある場合、その時刻を取得
     if user_input:
-        st.write("入力された内容:", user_input)
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        st.write(f"入力されたテキスト: {user_input}")
+        st.write(f"入力時刻: {current_time}")
