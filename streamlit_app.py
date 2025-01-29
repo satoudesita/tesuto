@@ -112,7 +112,7 @@ with tab1:
 with tab2:
 
     # Streamlitアプリ
-    st.title('テキストボックスの内容と時刻を取得')
+    st.text('テキストボックスの内容と時刻を取得')
 
     # テキストボックスの入力
     user_input = st.text_input('テキストを入力してください')
