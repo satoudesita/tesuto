@@ -4,7 +4,7 @@ import barcode
 from barcode.writer import ImageWriter
 from io import BytesIO
 from PIL import Image
-import streamlit.components.v1 as components
+
 # タブを作成
 tab1, tab2 = st.tabs(["QR", "BR"])
 
