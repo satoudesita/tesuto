@@ -6,6 +6,7 @@ import requests
 from barcode.writer import ImageWriter
 from io import BytesIO
 from PIL import Image
+import pytz
 
 def send_post_request(url, data):
     try:
@@ -130,9 +131,14 @@ with tab2:
         submit_button = st.form_submit_button(label='送信')
 
     if submit_button and user_input:
-        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        st.write(f"入力されたテキスト: {user_input}")
-        st.write(f"入力時刻: {current_time}")
+        # 日本のタイムゾーンを指定
+        japan_tz = pytz.timezone('Asia/Tokyo')
+        # 現在の日本時刻を取得
+        current_time_japan = datetime.now(japan_tz)
+        current_time=current_time_japan.strftime('%Y-%m-%d %H:%M:%S')
+        # 日本時刻を表示
+        st.text(f"入力されたテキスト: {user_input}")
+        st.text(f"入力時刻: {current_time}")
         data = {
             "名前": user_input,
             "時間": current_time,
