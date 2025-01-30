@@ -111,14 +111,14 @@ with tab1:
 
 with tab2:
 
-    # Streamlitアプリ
-    st.text('テキストボックスの内容と時刻を取得')
+    with st.form(key='my_form', clear_on_submit=True):
+        st.text('テキストボックスの内容と時刻を取得')            
+        user_input = st.text_input(label='テキストを入力してください:', key='input')
 
-    # テキストボックスの入力
-    user_input = st.text_input('テキストを入力してください')
+        
+        submit_button = st.form_submit_button(label='送信')
 
-    # テキストボックスの入力がある場合、その時刻を取得
-    if user_input:
+    if submit_button and user_input:
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         st.write(f"入力されたテキスト: {user_input}")
         st.write(f"入力時刻: {current_time}")
