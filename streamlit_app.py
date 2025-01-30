@@ -135,7 +135,7 @@ with tab2:
         japan_tz = pytz.timezone('Asia/Tokyo')
         # 現在の日本時刻を取得
         current_time_japan = datetime.now(japan_tz)
-        current_time=current_time_japan.strftime('%Y-%m-%d %H:%M:%S')
+        current_time=current_time_japan.strftime('%m-%d %H:%M')
         # 日本時刻を表示
         st.text(f"入力されたテキスト: {user_input}")
         st.text(f"入力時刻: {current_time}")
