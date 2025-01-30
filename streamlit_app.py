@@ -2,9 +2,20 @@ import streamlit as st
 from datetime import datetime
 import qrcode
 import barcode
+import requests
 from barcode.writer import ImageWriter
 from io import BytesIO
 from PIL import Image
+
+def send_post_request(url, data):
+    try:
+        response = requests.post(url, json=data)
+        if response.status_code == 200:
+            st.write("成功: ", response.json())
+        else:
+            st.write("エラー: ", response.status_code)
+    except Exception as e:
+        st.write(f"リクエストエラー: {e}")
 
 # タブを作成
 tab1, tab2 = st.tabs(["QR", "BR"])
@@ -122,3 +133,9 @@ with tab2:
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         st.write(f"入力されたテキスト: {user_input}")
         st.write(f"入力時刻: {current_time}")
+        data = {
+            "title": current_time,
+            "body": user_input,
+            "userId": 1
+        }
+        send_post_request('https://prod-08.japaneast.logic.azure.com:443/workflows/2dad7268f2844042bae005c2ec7916f6/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=V-60f4bGMzshRcghrvSV7qt-WEgKqbgQGfGk2F8BQPk', data)
