@@ -79,7 +79,7 @@ with tab1:
 
     with st.expander("バーコード"):
         # ユーザーからの入力を受け取る
-        text_input = st.text_input("バーコードにするテキストを入力してください:")
+        text_input = st.text_input("バーコードにするテキストを入力してください。:")
 
         # 入力されたテキストでCODE39バーコードを生成
         if text_input:
