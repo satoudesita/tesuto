@@ -19,7 +19,7 @@ def send_post_request(url, data):
         st.write(f"リクエストエラー: {e}")
 
 # タブを作成
-tab1, tab2 ,tab3= st.tabs(["QR", "BR","test"])
+tab1, tab2 ,tab3,tab4= st.tabs(["QR", "BR","test","test2"])
 
 with tab1:
 
@@ -196,3 +196,22 @@ with tab3:
             st.image(product.get('itemImageUrl')) 
     else:
         st.text("JANコードを入力してください")
+with tab4:
+     
+
+    # 最初のテキスト入力
+    a = st.text_input("d", key="test")
+
+    # `a` の最後に改行を追加
+    a = a + "\n"
+    with st.expander("見ないで"):
+        # フォームを作成
+        with st.form(key='my3_form', clear_on_submit=True):
+            # `a` を初期値として渡す
+            ja_code = st.text_area("JANコード", value=a, key="sarch")
+                
+            # フォーム送信ボタンはなく、代わりに自動表示
+            st.write(f"入力されたJANコード: {ja_code}")
+    st.text(ja_code)
+
+    # 送信ボタンはなくても自動で表示される
