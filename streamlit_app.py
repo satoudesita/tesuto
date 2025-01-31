@@ -149,7 +149,7 @@ with tab3:
     API_ID = "96385e12558d53c366efb3c187ef0440" 
 
     def search_product_by_code(jan_code):
-        
+
         params = {
             'appId': API_ID,     # アプリID（
             'query': jan_code,    # JANコード
@@ -177,7 +177,12 @@ with tab3:
             return None
 
     st.subheader("JANコードで商品検索")
-    jan_code = st.text_input("JANコードを入力してください")
+    with st.form(key='my2_form', clear_on_submit=True):
+        jan_code = st.text_input(label="JANコードを入力してください",key="search")           
+        
+        submit_button = st.form_submit_button(label='送信')
+
+    
 
     if jan_code:
         # 商品を検索
