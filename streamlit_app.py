@@ -149,6 +149,7 @@ with tab3:
     API_ID = "96385e12558d53c366efb3c187ef0440" 
 
     def search_product_by_code(jan_code):
+        
         params = {
             'appId': API_ID,     # アプリID（
             'query': jan_code,    # JANコード
