@@ -7,6 +7,8 @@ from barcode.writer import ImageWriter
 from io import BytesIO
 from PIL import Image
 import pytz
+import sqlite3
+import hashlib
 
 def send_post_request(url, data):
     try:
@@ -197,21 +199,145 @@ with tab3:
     else:
         st.text("JANコードを入力してください")
 with tab4:
-     
+    # SQLiteデータベースを初期化する関数
+    def init_db():
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL
+            )
+        ''')
+        conn.commit()
+        conn.close()
 
-    # 最初のテキスト入力
-    a = st.text_input("d", key="test")
+    # パスワードをハッシュ化する関数
+    def hash_password(password):
+        return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
-    # `a` の最後に改行を追加
-    a = a + "\n"
-    with st.expander("見ないで"):
-        # フォームを作成
-        with st.form(key='my3_form', clear_on_submit=True):
-            # `a` を初期値として渡す
-            ja_code = st.text_area("JANコード", value=a, key="sarch")
+    # ユーザー情報をデータベースに保存する関数
+    def save_user(username, password):
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        hashed_password = hash_password(password)
+        try:
+            cursor.execute('''
+                INSERT INTO users (username, password)
+                VALUES (?, ?)
+            ''', (username, hashed_password))
+            conn.commit()
+        except sqlite3.IntegrityError:
+            st.error("このユーザー名はすでに存在します")
+        conn.close()
+
+    # ユーザー名とパスワードで認証する関数
+    def authenticate_user(username, password):
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+        hashed_password = hash_password(password)
+        cursor.execute('''
+            SELECT * FROM users WHERE username = ? AND password = ?
+        ''', (username, hashed_password))
+        user = cursor.fetchone()
+        conn.close()
+        return user
+
+    # QRコードを生成する関数
+    def generate_qr(data):
+        qr = qrcode.make(data)
+        qr_path = "qr_code.png"
+        qr.save(qr_path)
+        return qr_path
+
+    # POSTリクエストを送信する関数（外部サービスと通信するため）
+    def send_post_request(url, data):
+        try:
+            response = requests.post(url, json=data)
+            if response.status_code == 200:
+                st.success("遅刻証明書が発行されました！")
+            else:
+                st.error("遅刻証明書の発行に失敗しました。")
+        except Exception as e:
+            st.error(f"エラーが発生しました: {e}")
+
+    # Streamlit UI部分
+    init_db()
+
+    # ログイン状態を追跡
+    if 'logged_in' not in st.session_state:
+        st.session_state.logged_in = False
+        st.session_state.username = ""
+
+    # ログインした場合の処理
+    if st.session_state.logged_in:
+        selected_option2 = st.radio("選択肢", ["遅刻証明", "ログアウト"])
+        if selected_option2 == "遅刻証明":
+            st.text(f"{st.session_state.username} ログイン")
+            st.subheader("遅刻証明書発行")
+            late_button = st.button(label="発行", key="hakkou")
+            if late_button:
+                # 日本のタイムゾーンを指定
+                japan_time = pytz.timezone('Asia/Tokyo')
+                # 現在の日本時刻を取得
+                get_time_japan = datetime.now(japan_time)
+                get_time = get_time_japan.strftime('%m-%d %H:%M')
+                # 日本時刻を表示
+                st.text(f"名前: {st.session_state.username}")
+                st.text(f"入力時刻: {get_time}")
+                data = {
+                    "名前": st.session_state.username,
+                    "時間": get_time,
+                }
+
+                # QRコードを生成
+                qr_path = generate_qr(data)
+
+                # QRコードを表示
+                st.image(qr_path, caption="遅刻証明書QRコード")
+
                 
-            # フォーム送信ボタンはなく、代わりに自動表示
-            st.write(f"入力されたJANコード: {ja_code}")
-    st.text(ja_code)
 
-    # 送信ボタンはなくても自動で表示される
+        else:
+            # ログアウトボタン
+            if st.button("ログアウト"):
+                st.session_state.logged_in = False
+                st.session_state.username = ""
+                st.success("ログアウトしました")
+
+    else:
+        # サインアップ / ログインの選択肢
+        st.subheader("ログイン / サインアップ")
+        selected_option = st.radio("選択肢", ["サインアップ", "ログイン"])
+
+        # サインアップフォーム
+        if selected_option == "サインアップ":
+            signup_username = st.text_input("ユーザー名")
+            signup_password = st.text_input("パスワード", type="password")
+            signup_confirm_password = st.text_input("パスワード確認", type="password")
+            
+            signup_button = st.button("サインアップ")
+            
+            if signup_button:
+                if signup_password == signup_confirm_password:
+                    save_user(signup_username, signup_password)
+                    st.success("サインアップが完了しました！ログインしてください。")
+                else:
+                    st.error("パスワードが一致しません。")
+
+        # ログインフォーム
+        if selected_option == "ログイン":
+            login_username = st.text_input("ユーザー名", key="login_username")
+            login_password = st.text_input("パスワード", type="password", key="login_password")
+            
+            login_button = st.button("ログイン")
+            
+            if login_button:
+                user = authenticate_user(login_username, login_password)
+                if user:
+                    st.session_state.logged_in = True
+                    st.session_state.username = login_username
+                    st.success(f"ようこそ、{login_username}さん！")
+                else:
+                    st.error("ユーザー名またはパスワードが間違っています。")
