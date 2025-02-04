@@ -9,6 +9,11 @@ from PIL import Image
 import pytz
 import sqlite3
 import hashlib
+import cv2
+import numpy as np
+from flask import Flask, request, jsonify
+import threading
+
 
 def send_post_request(url, data):
     try:
@@ -21,7 +26,7 @@ def send_post_request(url, data):
         st.write(f"リクエストエラー: {e}")
 
 # タブを作成
-tab1, tab2 ,tab3,tab4= st.tabs(["QR", "BR","test","test2"])
+tab1, tab2 ,tab3,tab4,tab5= st.tabs(["QR", "BR","test","遅刻証明","遅刻証明読み取り"])
 
 with tab1:
 
@@ -199,6 +204,10 @@ with tab3:
     else:
         st.text("JANコードを入力してください")
 with tab4:
+
+    # Flaskのインスタンスを作成
+    app = Flask(__name__)
+
     # SQLiteデータベースを初期化する関数
     def init_db():
         conn = sqlite3.connect("users.db")
@@ -251,16 +260,47 @@ with tab4:
         qr.save(qr_path)
         return qr_path
 
-    # POSTリクエストを送信する関数（外部サービスと通信するため）
-    def send_post_request(url, data):
-        try:
-            response = requests.post(url, json=data)
-            if response.status_code == 200:
-                st.success("遅刻証明書が発行されました！")
-            else:
-                st.error("遅刻証明書の発行に失敗しました。")
-        except Exception as e:
-            st.error(f"エラーが発生しました: {e}")
+    # ユーザーにメッセージを送信する関数
+    def send_message_to_user(username, message):
+        if username == st.session_state.username:  # ユーザー名が一致する場合にメッセージを送信
+            st.write(f"ユーザー {username} にメッセージ: {message}")
+        else:
+            st.error("指定されたユーザーが見つかりません")
+
+    # メッセージをFlaskサーバー経由で受け取る関数
+    def receive_message_from_flask():
+        url = "http://192.168.1.100:5000/receive_message"
+        payload = {
+            "username": st.session_state.username,
+            "message": "遅刻証明書の発行が完了しました"
+        }
+        response = requests.post(url, json=payload)
+        if response.status_code == 200:
+            st.success("メッセージが送信されました！")
+        else:
+            st.error(f"メッセージ送信に失敗しました: {response.text}")
+
+    # POSTリクエストを受け取るエンドポイント
+    @app.route('/receive_message', methods=['POST'])
+    def receive_message():
+        data = request.get_json()
+        username = data.get("username")
+        message = data.get("message")
+
+        if username and message:
+            send_message_to_user(username, message)
+            return jsonify({"status": "success", "message": "メッセージが送信されました"}), 200
+        else:
+            return jsonify({"status": "error", "message": "無効なデータ"}), 400
+
+    # Flaskサーバーをバックグラウンドで起動するための関数
+    def run_flask():
+        app.run(debug=True, host="0.0.0.0", port=5000)
+
+    # Flaskサーバーをバックグラウンドで実行
+    flask_thread = threading.Thread(target=run_flask)
+    flask_thread.daemon = True
+    flask_thread.start()
 
     # Streamlit UI部分
     init_db()
@@ -296,15 +336,16 @@ with tab4:
 
                 # QRコードを表示
                 st.image(qr_path, caption="遅刻証明書QRコード")
-
-                
-
         else:
             # ログアウトボタン
             if st.button("ログアウト"):
                 st.session_state.logged_in = False
                 st.session_state.username = ""
                 st.success("ログアウトしました")
+
+        # メッセージ送信ボタン
+        if st.button("メッセージを送信"):
+            receive_message_from_flask()
 
     else:
         # サインアップ / ログインの選択肢
@@ -341,3 +382,6 @@ with tab4:
                     st.success(f"ようこそ、{login_username}さん！")
                 else:
                     st.error("ユーザー名またはパスワードが間違っています。")
+
+with tab5:
+    st.text("m")
