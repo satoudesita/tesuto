@@ -10,6 +10,7 @@ import pytz
 import sqlite3
 import hashlib
 import threading
+import random
 
 def send_post_request(url, data):
     try:
@@ -289,12 +290,21 @@ with tab4:
                 st.text(f"名前: {st.session_state.username}")
                 st.text(f"入力時刻: {get_time}")
                 st.text(f"理由:{reason}")
-                data = {
+                st.subheader("認証コード")
+                ranndamu=random.randint(100,999)
+                ninnsyou=st.subheader(f"{st.session_state.username}{ranndamu}")
+                data1 = {
                     "名前": st.session_state.username,
                     "時間": get_time,
                     "理由": reason
                 }
-                send_post_request('https://prod-07.japaneast.logic.azure.com:443/workflows/e30f108c25324d62bfa50133e41c47bb/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=d3BzwwA54bqFHmhHwvCPZaXdScGUHJRS8pWwoXx-pds', data)
+                send_post_request('https://prod-07.japaneast.logic.azure.com:443/workflows/e30f108c25324d62bfa50133e41c47bb/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=d3BzwwA54bqFHmhHwvCPZaXdScGUHJRS8pWwoXx-pds', data1)
+
+                data2={
+                    "認証コード":ninnsyou
+                }
+                send_post_request('https://prod-01.japaneast.logic.azure.com:443/workflows/38f7b8c8d476411d8d4351e0638c6750/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=DQl_g5amg0IRCFIs1lRiIBvicQ1Z9JI9i7uNgWKKu2g', data2)
+
                 # QRコードを生成
                 qr_path = generate_qr(data)
 
