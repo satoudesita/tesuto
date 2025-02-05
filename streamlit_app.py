@@ -9,12 +9,7 @@ from PIL import Image
 import pytz
 import sqlite3
 import hashlib
-from flask import Flask, request, jsonify
 import threading
-
-
-
-
 
 def send_post_request(url, data):
     try:
