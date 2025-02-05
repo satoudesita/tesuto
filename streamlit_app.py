@@ -9,10 +9,11 @@ from PIL import Image
 import pytz
 import sqlite3
 import hashlib
-import cv2
-import numpy as np
 from flask import Flask, request, jsonify
 import threading
+
+
+
 
 
 def send_post_request(url, data):
@@ -205,8 +206,15 @@ with tab3:
         st.text("JANコードを入力してください")
 with tab4:
 
-    # Flaskのインスタンスを作成
-    app = Flask(__name__)
+    def send_post_request(url1, data):
+        try:
+            response = requests.post(url1, json=data)
+            if response.status_code == 200:
+                st.write("成功: ", response.json())
+            else:
+                st.write("エラー: ", response.status_code)
+        except Exception as e:
+            st.write(f"リクエストエラー: {e}")
 
     # SQLiteデータベースを初期化する関数
     def init_db():
@@ -259,49 +267,7 @@ with tab4:
         qr_path = "qr_code.png"
         qr.save(qr_path)
         return qr_path
-
-    # ユーザーにメッセージを送信する関数
-    def send_message_to_user(username, message):
-        if username == st.session_state.username:  # ユーザー名が一致する場合にメッセージを送信
-            st.write(f"ユーザー {username} にメッセージ: {message}")
-        else:
-            st.error("指定されたユーザーが見つかりません")
-
-    # メッセージをFlaskサーバー経由で受け取る関数
-    def receive_message_from_flask():
-        url = "http://192.168.1.100:5000/receive_message"
-        payload = {
-            "username": st.session_state.username,
-            "message": "遅刻証明書の発行が完了しました"
-        }
-        response = requests.post(url, json=payload)
-        if response.status_code == 200:
-            st.success("メッセージが送信されました！")
-        else:
-            st.error(f"メッセージ送信に失敗しました: {response.text}")
-
-    # POSTリクエストを受け取るエンドポイント
-    @app.route('/receive_message', methods=['POST'])
-    def receive_message():
-        data = request.get_json()
-        username = data.get("username")
-        message = data.get("message")
-
-        if username and message:
-            send_message_to_user(username, message)
-            return jsonify({"status": "success", "message": "メッセージが送信されました"}), 200
-        else:
-            return jsonify({"status": "error", "message": "無効なデータ"}), 400
-
-    # Flaskサーバーをバックグラウンドで起動するための関数
-    def run_flask():
-        app.run(debug=True, host="0.0.0.0", port=5000)
-
-    # Flaskサーバーをバックグラウンドで実行
-    flask_thread = threading.Thread(target=run_flask)
-    flask_thread.daemon = True
-    flask_thread.start()
-
+ 
     # Streamlit UI部分
     init_db()
 
@@ -316,6 +282,7 @@ with tab4:
         if selected_option2 == "遅刻証明":
             st.text(f"{st.session_state.username} ログイン")
             st.subheader("遅刻証明書発行")
+            reason = st.text_input(label="reason",key="why")
             late_button = st.button(label="発行", key="hakkou")
             if late_button:
                 # 日本のタイムゾーンを指定
@@ -326,11 +293,13 @@ with tab4:
                 # 日本時刻を表示
                 st.text(f"名前: {st.session_state.username}")
                 st.text(f"入力時刻: {get_time}")
+                st.text(f"理由:{reason}")
                 data = {
                     "名前": st.session_state.username,
                     "時間": get_time,
+                    "理由": reason
                 }
-
+                send_post_request('https://prod-07.japaneast.logic.azure.com:443/workflows/e30f108c25324d62bfa50133e41c47bb/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=d3BzwwA54bqFHmhHwvCPZaXdScGUHJRS8pWwoXx-pds', data)
                 # QRコードを生成
                 qr_path = generate_qr(data)
 
@@ -343,9 +312,6 @@ with tab4:
                 st.session_state.username = ""
                 st.success("ログアウトしました")
 
-        # メッセージ送信ボタン
-        if st.button("メッセージを送信"):
-            receive_message_from_flask()
 
     else:
         # サインアップ / ログインの選択肢
@@ -384,4 +350,4 @@ with tab4:
                     st.error("ユーザー名またはパスワードが間違っています。")
 
 with tab5:
-    st.text("m")
+    st.text("aa")
