@@ -219,16 +219,56 @@ with tab4:
             reason = st.text_input(label="理由", key="why")
             late_button = st.button(label="発行", key="hakkou")
             if late_button:
-                # 現在時刻を取得
                 japan_time = pytz.timezone('Asia/Tokyo')
                 get_time_japan = datetime.now(japan_time)
                 get_time = get_time_japan.strftime('%m-%d %H:%M ')
                 get_day = get_time_japan.strftime('%A')
+
+                # 日本時間の時刻部分
+                user_time = get_time_japan.time()
+
+                if datetime.strptime('09:15', '%H:%M').time()>= user_time >= datetime.strptime('08:25', '%H:%M').time():
+                    zigen=st.subheader("1限")
+                elif datetime.strptime('09:24', '%H:%M').time() >=user_time >= datetime.strptime('09:16', '%H:%M').time():
+                    zigen=st.subheader("1限と2限の間")
+                elif datetime.strptime('10:15', '%H:%M').time() >=user_time >= datetime.strptime('09:25', '%H:%M').time():
+                    zigen=st.subheader("2限")
+                elif datetime.strptime('10:24', '%H:%M').time() >=user_time >= datetime.strptime('10:16', '%H:%M').time():
+                    zigen=st.subheader("2限と3限の間")
+                elif datetime.strptime('11:15', '%H:%M').time() >=user_time >= datetime.strptime('10:25', '%H:%M').time():
+                    zigen=st.subheader("3限")
+                elif datetime.strptime('11:24', '%H:%M').time() >=user_time >= datetime.strptime('11:16', '%H:%M').time():
+                    zigen=st.subheader("3限と4限の間")
+                elif datetime.strptime('12:15', '%H:%M').time() >=user_time >= datetime.strptime('11:25', '%H:%M').time():
+                    zigen=st.subheader("4限")
+                elif datetime.strptime('12:55', '%H:%M').time() >=user_time >= datetime.strptime('12:16', '%H:%M').time():
+                    zigen=st.subheader("昼休み")
+                elif datetime.strptime('13:10', '%H:%M').time() >=user_time >= datetime.strptime('12:56', '%H:%M').time():
+                    zigen=st.subheader("掃除")
+                elif datetime.strptime('13:19', '%H:%M').time() >=user_time >= datetime.strptime('13:11', '%H:%M').time():
+                    zigen=st.subheader("掃除と5限の間")
+                elif datetime.strptime('14:10', '%H:%M').time() >=user_time >= datetime.strptime('13:20', '%H:%M').time():
+                    zigen=st.subheader("5限")
+                elif datetime.strptime('14:19', '%H:%M').time() >=user_time >= datetime.strptime('14:11', '%H:%M').time():
+                    zigen=st.subheader("5限と6限の間")
+                elif datetime.strptime('15:10', '%H:%M').time() >=user_time >= datetime.strptime('14:20', '%H:%M').time():
+                    zigen=st.subheader("6限")
+                elif datetime.strptime('15:19', '%H:%M').time() >=user_time >= datetime.strptime('15:11', '%H:%M').time():
+                    zigen=st.subheader("6限と7限の間")
+                elif datetime.strptime('16:10', '%H:%M').time() >=user_time >= datetime.strptime('15:20', '%H:%M').time():
+                    zigen=st.subheader("7限")
+                elif datetime.strptime('16:19', '%H:%M').time() >=user_time >= datetime.strptime('16:11', '%H:%M').time():
+                    zigen=st.subheader("7限とHRAの間")
+                elif datetime.strptime('16:35', '%H:%M').time() >=user_time >= datetime.strptime('16:20', '%H:%M').time():
+                    zigen=st.subheader("HRA")
+                else:
+                    zigen=st.subheader("放課後")
                 
                 # 遅刻証明の情報を表示
                 st.subheader(f"名前: {st.session_state.username}")
                 st.subheader(f"入力時刻: {get_time}({get_day})")
                 st.subheader(f"理由: {reason}")
+
                 
                 ranndamu = random.randint(100, 999)  # ランダムな3桁の数字
                 ranndamu1 = str(ranndamu)  # 文字列に変換
