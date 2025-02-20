@@ -158,7 +158,25 @@ with tab4:
                 st.write("エラーメッセージ: ", response.text)  # エラーメッセージを表示
         except Exception as e:
             st.write(f"リクエストエラー: {e}")
- 
+
+    def send_post_request2(url, name, time,day,zigen, reason):
+        try:
+            request_data = {
+                "名前": str(name),
+                "時間": str(time),
+                "曜日": str(day),
+                "時間割":str(zigen),
+                "理由": str(reason)
+            }
+            response = requests.post(url, json=request_data)
+            if response.status_code == 200:
+                st.write("成功: ", response.json())
+            else:
+                st.write("エラー: ", response.status_code)
+                st.write("エラーメッセージ: ", response.text)
+        except Exception as e:
+            st.write(f"リクエストエラー: {e}")
+    
     # ユーザーのDB初期化
     def init_db():
         conn = sqlite3.connect("users.db")
@@ -222,119 +240,123 @@ with tab4:
                 japan_time = pytz.timezone('Asia/Tokyo')
                 get_time_japan = datetime.now(japan_time)
                 get_time = get_time_japan.strftime('%m月%d日 %H時%M分 ')
+                md=get_time_japan.strftime('%m月%d日  ')
+                hm=get_time_japan.strftime('%H時%M分 ')
                 get_day = get_time_japan.strftime('%A')
+                
  
                 # 日本時間の時刻部分
                 user_time = get_time_japan.time()
                 if get_day == "Monday":
-                    if datetime.strptime('09:15', '%H:%M').time()>= user_time >= datetime.strptime('08:25', '%H:%M').time():
-                        zigen=st.subheader("1限")
-                    elif datetime.strptime('09:24', '%H:%M').time() >=user_time >= datetime.strptime('09:16', '%H:%M').time():
-                        zigen=st.subheader("1限と2限の間")
-                    elif datetime.strptime('10:15', '%H:%M').time() >=user_time >= datetime.strptime('09:25', '%H:%M').time():
-                        zigen=st.subheader("2限")
-                    elif datetime.strptime('10:24', '%H:%M').time() >=user_time >= datetime.strptime('10:16', '%H:%M').time():
-                        zigen=st.subheader("2限と3限の間")
-                    elif datetime.strptime('11:15', '%H:%M').time() >=user_time >= datetime.strptime('10:25', '%H:%M').time():
-                        zigen=st.subheader("3限")
-                    elif datetime.strptime('11:24', '%H:%M').time() >=user_time >= datetime.strptime('11:16', '%H:%M').time():
-                        zigen=st.subheader("3限と4限の間")
-                    elif datetime.strptime('12:15', '%H:%M').time() >=user_time >= datetime.strptime('11:25', '%H:%M').time():
-                        zigen=st.subheader("4限")
-                    elif datetime.strptime('12:55', '%H:%M').time() >=user_time >= datetime.strptime('12:16', '%H:%M').time():
-                        zigen=st.subheader("昼休み")
-                    elif datetime.strptime('13:10', '%H:%M').time() >=user_time >= datetime.strptime('12:56', '%H:%M').time():
-                        zigen=st.subheader("掃除")
-                    elif datetime.strptime('13:19', '%H:%M').time() >=user_time >= datetime.strptime('13:11', '%H:%M').time():
-                        zigen=st.subheader("掃除と5限の間")
-                    elif datetime.strptime('14:10', '%H:%M').time() >=user_time >= datetime.strptime('13:20', '%H:%M').time():
-                        zigen=st.subheader("5限")
-                    elif datetime.strptime('14:19', '%H:%M').time() >=user_time >= datetime.strptime('14:11', '%H:%M').time():
-                        zigen=st.subheader("5限と6限の間")
-                    elif datetime.strptime('15:10', '%H:%M').time() >=user_time >= datetime.strptime('14:20', '%H:%M').time():
-                        zigen=st.subheader("6限")
-                    elif datetime.strptime('15:19', '%H:%M').time() >=user_time >= datetime.strptime('15:11', '%H:%M').time():
-                        zigen=st.subheader("6限とHRAの間")
-                    elif datetime.strptime('15:35', '%H:%M').time() >=user_time >= datetime.strptime('15:20', '%H:%M').time():
-                        zigen=st.subheader("HRA")
+                    if datetime.strptime('09:15', '%H:%M').time() >= user_time >= datetime.strptime('08:25', '%H:%M').time():
+                        zigen_text = "1限"
+                    elif datetime.strptime('09:24', '%H:%M').time() >= user_time >= datetime.strptime('09:16', '%H:%M').time():
+                        zigen_text = "1限と2限の間"
+                    elif datetime.strptime('10:15', '%H:%M').time() >= user_time >= datetime.strptime('09:25', '%H:%M').time():
+                        zigen_text = "2限"
+                    elif datetime.strptime('10:24', '%H:%M').time() >= user_time >= datetime.strptime('10:16', '%H:%M').time():
+                        zigen_text = "2限と3限の間"
+                    elif datetime.strptime('11:15', '%H:%M').time() >= user_time >= datetime.strptime('10:25', '%H:%M').time():
+                        zigen_text = "3限"
+                    elif datetime.strptime('11:24', '%H:%M').time() >= user_time >= datetime.strptime('11:16', '%H:%M').time():
+                        zigen_text = "3限と4限の間"
+                    elif datetime.strptime('12:15', '%H:%M').time() >= user_time >= datetime.strptime('11:25', '%H:%M').time():
+                        zigen_text = "4限"
+                    elif datetime.strptime('12:55', '%H:%M').time() >= user_time >= datetime.strptime('12:16', '%H:%M').time():
+                        zigen_text = "昼休み"
+                    elif datetime.strptime('13:10', '%H:%M').time() >= user_time >= datetime.strptime('12:56', '%H:%M').time():
+                        zigen_text = "掃除"
+                    elif datetime.strptime('13:19', '%H:%M').time() >= user_time >= datetime.strptime('13:11', '%H:%M').time():
+                        zigen_text = "掃除と5限の間"
+                    elif datetime.strptime('14:10', '%H:%M').time() >= user_time >= datetime.strptime('13:20', '%H:%M').time():
+                        zigen_text = "5限"
+                    elif datetime.strptime('14:19', '%H:%M').time() >= user_time >= datetime.strptime('14:11', '%H:%M').time():
+                        zigen_text = "5限と6限の間"
+                    elif datetime.strptime('15:10', '%H:%M').time() >= user_time >= datetime.strptime('14:20', '%H:%M').time():
+                        zigen_text = "6限"
+                    elif datetime.strptime('15:19', '%H:%M').time() >= user_time >= datetime.strptime('15:11', '%H:%M').time():
+                        zigen_text = "6限とHRAの間"
+                    elif datetime.strptime('15:35', '%H:%M').time() >= user_time >= datetime.strptime('15:20', '%H:%M').time():
+                        zigen_text = "HRA"
                     else:
-                        zigen=st.subheader("放課後")
+                        zigen_text = "放課後"
                 elif get_day == "Wednesday":
-                    if datetime.strptime('09:15', '%H:%M').time()>= user_time >= datetime.strptime('08:25', '%H:%M').time():
-                        zigen=st.subheader("1限")
-                    elif datetime.strptime('09:24', '%H:%M').time() >=user_time >= datetime.strptime('09:16', '%H:%M').time():
-                        zigen=st.subheader("1限と2限の間")
-                    elif datetime.strptime('10:15', '%H:%M').time() >=user_time >= datetime.strptime('09:25', '%H:%M').time():
-                        zigen=st.subheader("2限")
-                    elif datetime.strptime('10:24', '%H:%M').time() >=user_time >= datetime.strptime('10:16', '%H:%M').time():
-                        zigen=st.subheader("2限と3限の間")
-                    elif datetime.strptime('11:15', '%H:%M').time() >=user_time >= datetime.strptime('10:25', '%H:%M').time():
-                        zigen=st.subheader("3限")
-                    elif datetime.strptime('11:24', '%H:%M').time() >=user_time >= datetime.strptime('11:16', '%H:%M').time():
-                        zigen=st.subheader("3限と4限の間")
-                    elif datetime.strptime('12:15', '%H:%M').time() >=user_time >= datetime.strptime('11:25', '%H:%M').time():
-                        zigen=st.subheader("4限")
-                    elif datetime.strptime('12:55', '%H:%M').time() >=user_time >= datetime.strptime('12:16', '%H:%M').time():
-                        zigen=st.subheader("昼休み")
-                    elif datetime.strptime('13:10', '%H:%M').time() >=user_time >= datetime.strptime('12:56', '%H:%M').time():
-                        zigen=st.subheader("掃除")
-                    elif datetime.strptime('13:19', '%H:%M').time() >=user_time >= datetime.strptime('13:11', '%H:%M').time():
-                        zigen=st.subheader("掃除と5限の間")
-                    elif datetime.strptime('14:10', '%H:%M').time() >=user_time >= datetime.strptime('13:20', '%H:%M').time():
-                        zigen=st.subheader("5限")
-                    elif datetime.strptime('14:19', '%H:%M').time() >=user_time >= datetime.strptime('14:11', '%H:%M').time():
-                        zigen=st.subheader("5限と6限の間")
-                    elif datetime.strptime('15:10', '%H:%M').time() >=user_time >= datetime.strptime('14:20', '%H:%M').time():
-                        zigen=st.subheader("6限")
-                    elif datetime.strptime('15:19', '%H:%M').time() >=user_time >= datetime.strptime('15:11', '%H:%M').time():
-                        zigen=st.subheader("6限とHRAの間")
-                    elif datetime.strptime('15:35', '%H:%M').time() >=user_time >= datetime.strptime('15:20', '%H:%M').time():
-                        zigen=st.subheader("HRA")
+                    if datetime.strptime('09:15', '%H:%M').time() >= user_time >= datetime.strptime('08:25', '%H:%M').time():
+                        zigen_text = "1限"
+                    elif datetime.strptime('09:24', '%H:%M').time() >= user_time >= datetime.strptime('09:16', '%H:%M').time():
+                        zigen_text = "1限と2限の間"
+                    elif datetime.strptime('10:15', '%H:%M').time() >= user_time >= datetime.strptime('09:25', '%H:%M').time():
+                        zigen_text = "2限"
+                    elif datetime.strptime('10:24', '%H:%M').time() >= user_time >= datetime.strptime('10:16', '%H:%M').time():
+                        zigen_text = "2限と3限の間"
+                    elif datetime.strptime('11:15', '%H:%M').time() >= user_time >= datetime.strptime('10:25', '%H:%M').time():
+                        zigen_text = "3限"
+                    elif datetime.strptime('11:24', '%H:%M').time() >= user_time >= datetime.strptime('11:16', '%H:%M').time():
+                        zigen_text = "3限と4限の間"
+                    elif datetime.strptime('12:15', '%H:%M').time() >= user_time >= datetime.strptime('11:25', '%H:%M').time():
+                        zigen_text = "4限"
+                    elif datetime.strptime('12:55', '%H:%M').time() >= user_time >= datetime.strptime('12:16', '%H:%M').time():
+                        zigen_text = "昼休み"
+                    elif datetime.strptime('13:10', '%H:%M').time() >= user_time >= datetime.strptime('12:56', '%H:%M').time():
+                        zigen_text = "掃除"
+                    elif datetime.strptime('13:19', '%H:%M').time() >= user_time >= datetime.strptime('13:11', '%H:%M').time():
+                        zigen_text = "掃除と5限の間"
+                    elif datetime.strptime('14:10', '%H:%M').time() >= user_time >= datetime.strptime('13:20', '%H:%M').time():
+                        zigen_text = "5限"
+                    elif datetime.strptime('14:19', '%H:%M').time() >= user_time >= datetime.strptime('14:11', '%H:%M').time():
+                        zigen_text = "5限と6限の間"
+                    elif datetime.strptime('15:10', '%H:%M').time() >= user_time >= datetime.strptime('14:20', '%H:%M').time():
+                        zigen_text = "6限"
+                    elif datetime.strptime('15:19', '%H:%M').time() >= user_time >= datetime.strptime('15:11', '%H:%M').time():
+                        zigen_text = "6限とHRAの間"
+                    elif datetime.strptime('15:35', '%H:%M').time() >= user_time >= datetime.strptime('15:20', '%H:%M').time():
+                        zigen_text = "HRA"
                     else:
-                        zigen=st.subheader("放課後")
+                        zigen_text = "放課後"
                 else:
-                    if datetime.strptime('09:15', '%H:%M').time()>= user_time >= datetime.strptime('08:25', '%H:%M').time():
-                        zigen=st.subheader("1限")
-                    elif datetime.strptime('09:24', '%H:%M').time() >=user_time >= datetime.strptime('09:16', '%H:%M').time():
-                        zigen=st.subheader("1限と2限の間")
-                    elif datetime.strptime('10:15', '%H:%M').time() >=user_time >= datetime.strptime('09:25', '%H:%M').time():
-                        zigen=st.subheader("2限")
-                    elif datetime.strptime('10:24', '%H:%M').time() >=user_time >= datetime.strptime('10:16', '%H:%M').time():
-                        zigen=st.subheader("2限と3限の間")
-                    elif datetime.strptime('11:15', '%H:%M').time() >=user_time >= datetime.strptime('10:25', '%H:%M').time():
-                        zigen=st.subheader("3限")
-                    elif datetime.strptime('11:24', '%H:%M').time() >=user_time >= datetime.strptime('11:16', '%H:%M').time():
-                        zigen=st.subheader("3限と4限の間")
-                    elif datetime.strptime('12:15', '%H:%M').time() >=user_time >= datetime.strptime('11:25', '%H:%M').time():
-                        zigen=st.subheader("4限")
-                    elif datetime.strptime('12:55', '%H:%M').time() >=user_time >= datetime.strptime('12:16', '%H:%M').time():
-                        zigen=st.subheader("昼休み")
-                    elif datetime.strptime('13:10', '%H:%M').time() >=user_time >= datetime.strptime('12:56', '%H:%M').time():
-                        zigen=st.subheader("掃除")
-                    elif datetime.strptime('13:19', '%H:%M').time() >=user_time >= datetime.strptime('13:11', '%H:%M').time():
-                        zigen=st.subheader("掃除と5限の間")
-                    elif datetime.strptime('14:10', '%H:%M').time() >=user_time >= datetime.strptime('13:20', '%H:%M').time():
-                        zigen=st.subheader("5限")
-                    elif datetime.strptime('14:19', '%H:%M').time() >=user_time >= datetime.strptime('14:11', '%H:%M').time():
-                        zigen=st.subheader("5限と6限の間")
-                    elif datetime.strptime('15:10', '%H:%M').time() >=user_time >= datetime.strptime('14:20', '%H:%M').time():
-                        zigen=st.subheader("6限")
-                    elif datetime.strptime('15:19', '%H:%M').time() >=user_time >= datetime.strptime('15:11', '%H:%M').time():
-                        zigen=st.subheader("6限と7限の間")
-                    elif datetime.strptime('16:10', '%H:%M').time() >=user_time >= datetime.strptime('15:20', '%H:%M').time():
-                        zigen=st.subheader("7限")
-                    elif datetime.strptime('16:19', '%H:%M').time() >=user_time >= datetime.strptime('16:11', '%H:%M').time():
-                        zigen=st.subheader("7限とHRAの間")
-                    elif datetime.strptime('16:35', '%H:%M').time() >=user_time >= datetime.strptime('16:20', '%H:%M').time():
-                        zigen=st.subheader("HRA")
+                    if datetime.strptime('09:15', '%H:%M').time() >= user_time >= datetime.strptime('08:25', '%H:%M').time():
+                        zigen_text = "1限"
+                    elif datetime.strptime('09:24', '%H:%M').time() >= user_time >= datetime.strptime('09:16', '%H:%M').time():
+                        zigen_text = "1限と2限の間"
+                    elif datetime.strptime('10:15', '%H:%M').time() >= user_time >= datetime.strptime('09:25', '%H:%M').time():
+                        zigen_text = "2限"
+                    elif datetime.strptime('10:24', '%H:%M').time() >= user_time >= datetime.strptime('10:16', '%H:%M').time():
+                        zigen_text = "2限と3限の間"
+                    elif datetime.strptime('11:15', '%H:%M').time() >= user_time >= datetime.strptime('10:25', '%H:%M').time():
+                        zigen_text = "3限"
+                    elif datetime.strptime('11:24', '%H:%M').time() >= user_time >= datetime.strptime('11:16', '%H:%M').time():
+                        zigen_text = "3限と4限の間"
+                    elif datetime.strptime('12:15', '%H:%M').time() >= user_time >= datetime.strptime('11:25', '%H:%M').time():
+                        zigen_text = "4限"
+                    elif datetime.strptime('12:55', '%H:%M').time() >= user_time >= datetime.strptime('12:16', '%H:%M').time():
+                        zigen_text = "昼休み"
+                    elif datetime.strptime('13:10', '%H:%M').time() >= user_time >= datetime.strptime('12:56', '%H:%M').time():
+                        zigen_text = "掃除"
+                    elif datetime.strptime('13:19', '%H:%M').time() >= user_time >= datetime.strptime('13:11', '%H:%M').time():
+                        zigen_text = "掃除と5限の間"
+                    elif datetime.strptime('14:10', '%H:%M').time() >= user_time >= datetime.strptime('13:20', '%H:%M').time():
+                        zigen_text = "5限"
+                    elif datetime.strptime('14:19', '%H:%M').time() >= user_time >= datetime.strptime('14:11', '%H:%M').time():
+                        zigen_text = "5限と6限の間"
+                    elif datetime.strptime('15:10', '%H:%M').time() >= user_time >= datetime.strptime('14:20', '%H:%M').time():
+                        zigen_text = "6限"
+                    elif datetime.strptime('15:19', '%H:%M').time() >= user_time >= datetime.strptime('15:11', '%H:%M').time():
+                        zigen_text = "6限と7限の間"
+                    elif datetime.strptime('16:10', '%H:%M').time() >= user_time >= datetime.strptime('15:20', '%H:%M').time():
+                        zigen_text = "7限"
+                    elif datetime.strptime('16:19', '%H:%M').time() >= user_time >= datetime.strptime('16:11', '%H:%M').time():
+                        zigen_text = "7限とHRAの間"
+                    elif datetime.strptime('16:35', '%H:%M').time() >= user_time >= datetime.strptime('16:20', '%H:%M').time():
+                        zigen_text = "HRA"
                     else:
-                        zigen=st.subheader("放課後")
- 
-                
-               
+                        zigen_text = "放課後"
+
+                # 画面表示
+                st.subheader(zigen_text)
+
                 # 遅刻証明の情報を表示
                 st.subheader(f"名前: {st.session_state.username}")
-                st.subheader(f"入力時刻: {get_time}({get_day})")
+                st.subheader(f"入力時刻: {md}({get_day}){hm}")
                 st.subheader(f"理由: {reason}")
  
                
@@ -347,12 +369,18 @@ with tab4:
                 # st.text() に渡す際は tikokuninnsyou をそのまま渡す
                 st.subheader(f"認証番号{tikokuninnsyou}")  # 正しい文字列を表示
  
-                # 遅刻証明書発行のために必要なデータ（ランダムな数字を追加）
-                data1 = {"名前": st.session_state.username, "時間": get_time, "理由": reason}
-               
-                # データ送信 (遅刻証明用)
-                send_post_request('https://prod-07.japaneast.logic.azure.com:443/workflows/e30f108c25324d62bfa50133e41c47bb/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=d3BzwwA54bqFHmhHwvCPZaXdScGUHJRS8pWwoXx-pds', data1)
-               
+                # データを個別のプロパティにする
+                data1 = st.session_state.username
+                data2 = get_time
+                data3 = get_day
+                data4 = zigen_text
+                data5 = reason
+
+                
+
+                # JSONで送信
+                send_post_request2('https://prod-07.japaneast.logic.azure.com:443/workflows/e30f108c25324d62bfa50133e41c47bb/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=d3BzwwA54bqFHmhHwvCPZaXdScGUHJRS8pWwoXx-pds', data1,data2,data3,data4,data5)
+
                 # ランダムな数字を別のURLに送信
                 send_post_request('https://prod-01.japaneast.logic.azure.com:443/workflows/38f7b8c8d476411d8d4351e0638c6750/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=DQl_g5amg0IRCFIs1lRiIBvicQ1Z9JI9i7uNgWKKu2g', tikokuninnsyou)
  
