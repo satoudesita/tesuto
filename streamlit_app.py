@@ -221,7 +221,7 @@ with tab4:
             if late_button:
                 japan_time = pytz.timezone('Asia/Tokyo')
                 get_time_japan = datetime.now(japan_time)
-                get_time = get_time_japan.strftime('%m月%d %H時%M分 ')
+                get_time = get_time_japan.strftime('%m月%d日 %H時%M分 ')
                 get_day = get_time_japan.strftime('%A')
  
                 # 日本時間の時刻部分
