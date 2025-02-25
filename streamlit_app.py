@@ -329,11 +329,11 @@ with tab4:
                     elif datetime.strptime('12:15', '%H:%M').time() >= user_time >= datetime.strptime('11:25', '%H:%M').time():
                         zigen_text = "4限"
                     elif datetime.strptime('12:55', '%H:%M').time() >= user_time >= datetime.strptime('12:16', '%H:%M').time():
-                        zigen_text = "昼休み"
-                    elif datetime.strptime('13:10', '%H:%M').time() >= user_time >= datetime.strptime('12:56', '%H:%M').time():
-                        zigen_text = "掃除"
+                        zigen_text = "昼休み！"
+                    elif datetime.strptime('13:10', '%H:%M).time() >= user_time >= datetime.strptime('12:56', '%H:%M').time():
+                       zigen_text = "掃除！"
                     elif datetime.strptime('13:19', '%H:%M').time() >= user_time >= datetime.strptime('13:11', '%H:%M').time():
-                        zigen_text = "掃除と5限の間"
+                        zigen_text = "掃除と5限の"
                     elif datetime.strptime('14:10', '%H:%M').time() >= user_time >= datetime.strptime('13:20', '%H:%M').time():
                         zigen_text = "5限"
                     elif datetime.strptime('14:19', '%H:%M').time() >= user_time >= datetime.strptime('14:11', '%H:%M').time():
