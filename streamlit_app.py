@@ -330,7 +330,7 @@ with tab4:
                         zigen_text = "4限"
                     elif datetime.strptime('12:55', '%H:%M').time() >= user_time >= datetime.strptime('12:16', '%H:%M').time():
                         zigen_text = "昼休み！"
-                    elif datetime.strptime('13:10', '%H:%M).time() >= user_time >= datetime.strptime('12:56', '%H:%M').time():
+                    elif datetime.strptime('13:10', '%H:%M').time() >= user_time >= datetime.strptime('12:56', '%H:%M').time():
                        zigen_text = "掃除！"
                     elif datetime.strptime('13:19', '%H:%M').time() >= user_time >= datetime.strptime('13:11', '%H:%M').time():
                         zigen_text = "掃除と5限の"
@@ -392,7 +392,7 @@ with tab4:
             if st.button("ログアウト"):
                 st.session_state.logged_in = False
                 st.session_state.username = ""
-                st.success("ログアウトしました")
+                st.success("ログアウトしました！！！！")
     else:
         st.subheader("ログイン / サインアップ")
         selected_option = st.radio("選択肢", ["サインアップ", "ログイン"])
