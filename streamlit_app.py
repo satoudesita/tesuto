@@ -121,7 +121,7 @@ with tab2:
         st.text(f"入力時刻: {current_time}")
         syuseki=user_input
         sussekitime=current_time
-        send_post_request3('https://prod-08.japaneast.logic.azure.com:443/workflows/2dad7268f2844042bae005c2ec7916f6/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=V-60f4bGMzshRcghrvSV7qt-WEgKqbgQGfGk2F8BQPk', syuseki,sussekitime)
+        send_post_request3('https://prod-01.japaneast.logic.azure.com:443/workflows/38f7b8c8d476411d8d4351e0638c6750/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=DQl_g5amg0IRCFIs1lRiIBvicQ1Z9JI9i7uNgWKKu2g', syuseki,sussekitime)
  
 with tab3:
     API_URL = "https://api.jancodelookup.com/"
