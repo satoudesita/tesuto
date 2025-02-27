@@ -21,6 +21,22 @@ def send_post_request(url, data):
             st.write("エラー: ", response.status_code)
     except Exception as e:
         st.write(f"リクエストエラー: {e}")
+
+def send_post_request3(url, name, time):
+    try:
+        request_data = {
+            "名前": str(name),
+            "時間": str(time),
+
+        }
+        response = requests.post(url, json=request_data)
+        if response.status_code == 200:
+            st.write("成功: ", response.json())
+        else:
+            st.write("エラー: ", response.status_code)
+            st.write("エラーメッセージ: ", response.text)
+    except Exception as e:
+        st.write(f"リクエストエラー: {e}")
  
 # QRコードを生成する関数
 def generate_qrcode(data):
@@ -103,8 +119,9 @@ with tab2:
        
         st.text(f"入力されたテキスト: {user_input}")
         st.text(f"入力時刻: {current_time}")
-        data = {"名前": user_input, "時間": current_time}
-        send_post_request('https://prod-08.japaneast.logic.azure.com:443/workflows/2dad7268f2844042bae005c2ec7916f6/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=V-60f4bGMzshRcghrvSV7qt-WEgKqbgQGfGk2F8BQPk', data)
+        syuseki=user_input
+        sussekitime=current_time
+        send_post_request3('https://prod-08.japaneast.logic.azure.com:443/workflows/2dad7268f2844042bae005c2ec7916f6/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=V-60f4bGMzshRcghrvSV7qt-WEgKqbgQGfGk2F8BQPk', syuseki,sussekitime)
  
 with tab3:
     API_URL = "https://api.jancodelookup.com/"
