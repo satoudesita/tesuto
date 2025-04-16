@@ -184,7 +184,8 @@ with tab4:
                 "時間": str(time),
                 "曜日": str(day),
                 "時間割":str(zigen),
-                "理由": str(reason)
+                "理由": str(reason),
+                "目次": str(year)
             }
             response = requests.post(url, json=request_data)
             if response.status_code == 200:
