@@ -116,6 +116,7 @@ with tab2:
         japan_tz = pytz.timezone('Asia/Tokyo')
         current_time_japan = datetime.now(japan_tz)
         current_time = current_time_japan.strftime('%m月%d日 %H時%M分')
+        current_time1 = current_time_japan.strftime('%m月%d日 %H時%M分')
        
         st.text(f"入力されたテキスト: {user_input}")
         st.text(f"入力時刻: {current_time}")
@@ -176,7 +177,7 @@ with tab4:
         except Exception as e:
             st.write(f"リクエストエラー: {e}")
 
-    def send_post_request2(url, name, time,day,zigen, reason):
+    def send_post_request2(url, name, time,day,zigen, reason,year):
         try:
             request_data = {
                 "名前": str(name),
@@ -257,6 +258,7 @@ with tab4:
                 japan_time = pytz.timezone('Asia/Tokyo')
                 get_time_japan = datetime.now(japan_time)
                 get_time = get_time_japan.strftime('%m月%d日 %H時%M分 ')
+                get_time1 = get_time_japan.strftime('%Y-%m-%d ')
                 md=get_time_japan.strftime('%m月%d日  ')
                 hm=get_time_japan.strftime('%H時%M分 ')
                 get_day = get_time_japan.strftime('%A')
@@ -378,25 +380,26 @@ with tab4:
  
                
                 ranndamu = random.randint(100, 999)  # ランダムな3桁の数字
-                ranndamu1 = str(ranndamu)  # 文字列に変換
+                ranndamu1 = str(ranndamu)  
  
-                # 文字列として「1221+ranndamu1」を表示
-                tikokuninnsyou = "1221" + ranndamu1  # 結果を文字列として設定
+                
+                tikokuninnsyou = "1221" + ranndamu1  
  
-                # st.text() に渡す際は tikokuninnsyou をそのまま渡す
+                
                 st.subheader(f"認証番号{tikokuninnsyou}")  # 正しい文字列を表示
  
-                # データを個別のプロパティにする
+                
                 data1 = st.session_state.username
                 data2 = get_time
                 data3 = get_day
                 data4 = zigen_text
                 data5 = reason
+                data6 = get_time1
 
                 
 
                 # JSONで送信
-                send_post_request2('https://prod-07.japaneast.logic.azure.com:443/workflows/e30f108c25324d62bfa50133e41c47bb/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=d3BzwwA54bqFHmhHwvCPZaXdScGUHJRS8pWwoXx-pds', data1,data2,data3,data4,data5)
+                send_post_request2('https://prod-07.japaneast.logic.azure.com:443/workflows/e30f108c25324d62bfa50133e41c47bb/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=d3BzwwA54bqFHmhHwvCPZaXdScGUHJRS8pWwoXx-pds', data1,data2,data3,data4,data5,data6)
 
                 # ランダムな数字を別のURLに送信
                 send_post_request('https://prod-08.japaneast.logic.azure.com:443/workflows/2dad7268f2844042bae005c2ec7916f6/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=V-60f4bGMzshRcghrvSV7qt-WEgKqbgQGfGk2F8BQPk', tikokuninnsyou)
